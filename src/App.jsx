@@ -2,8 +2,8 @@ import { useDispatch } from 'react-redux';
 import { Header } from 'components/index.js';
 import { lazy, useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { getUserInfo } from 'service/opencagedataApi.js';
 import { fetchCurrency } from 'reduxState/operetions.js';
+import { setDefaultCurrency } from 'reduxState/currencySlice.js';
 
 const Home = lazy(() => import('./pages/Home.jsx'));
 const Rates = lazy(() => import('./pages/Rates.jsx'));
@@ -29,7 +29,8 @@ export const App = () => {
     }
 
     function error(err) {
-      console.warn(`ERROR(${err.code}): ${err.message}`);
+      dispatch(setDefaultCurrency('USD'));
+      console.log(err);
     }
 
     navigator.geolocation.getCurrentPosition(success, error, options);
