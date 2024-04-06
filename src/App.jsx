@@ -1,10 +1,15 @@
+import { useDispatch } from 'react-redux';
 import { Header } from 'components/index.js';
 import { lazy, useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { getUserInfo } from 'service/opencagedataApi.js';
+import { fetchCurrency } from 'reduxState/operetions.js';
 
 const Home = lazy(() => import('./pages/Home.jsx'));
 const Rates = lazy(() => import('./pages/Rates.jsx'));
 export const App = () => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const options = {
       enableHighAccuracy: true,
@@ -12,13 +17,15 @@ export const App = () => {
       maximumAge: 0,
     };
 
-    function success(pos) {
+    async function success(pos) {
       const crd = pos.coords;
 
-      console.log('Your current position is:');
-      console.log(`Latitude : ${crd.latitude}`);
-      console.log(`Longitude: ${crd.longitude}`);
-      console.log(`More or less ${crd.accuracy} meters.`);
+      dispatch(
+        fetchCurrency({
+          latitude: crd.latitude,
+          longitude: crd.longitude,
+        }),
+      );
     }
 
     function error(err) {
@@ -26,7 +33,8 @@ export const App = () => {
     }
 
     navigator.geolocation.getCurrentPosition(success, error, options);
-  }, []);
+  }, [dispatch]);
+
   return (
     <>
       <Routes>
